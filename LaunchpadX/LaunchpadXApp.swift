@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct LaunchpadXApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate
+    
+    init(){
+        swizzleMenuAccessibility()
+    }
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        Settings{
+            EmptyView()
         }
     }
 }
