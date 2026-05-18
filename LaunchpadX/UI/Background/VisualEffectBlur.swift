@@ -14,7 +14,7 @@ struct VisualEffectBlur: NSViewRepresentable {
 
         let view = NSVisualEffectView()
 
-        view.material = .hudWindow
+        view.material = .underWindowBackground
         view.blendingMode = .withinWindow
         view.state = state
         

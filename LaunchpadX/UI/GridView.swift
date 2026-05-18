@@ -39,33 +39,37 @@ struct GridView: View {
         }
     }
     
+    
+    // 💡 核心新增：捕获当前的系统主题（.light 或 .dark）
+    @Environment(\.colorScheme) var colorScheme
+    
+    
+    // 小圆点的智能底色
+    private var dotBaseColor: Color {
+        colorScheme == .dark ? Color.white : Color.black
+    }
+    
+    
     var body: some View {
         GeometryReader { geometry in
             // 获取当前可用屏幕的宽高
             let pageWidth = geometry.size.width
             let pageHeight = geometry.size.height
-            ZStack(){
+            ZStack{
                 
                 SearchBarView(text: $searchText)
-                    .frame(height: 80, alignment: .top)
+                    .frame(maxHeight: .infinity, alignment: .top)
                     .padding(.top, 20) // 避开状态栏
-                
+                    .zIndex(1)
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack(spacing: 0) {
                         ForEach(filteredPages,id: \.self){ page in
-                            // 【单页容器】：尺寸必须精准等于可用屏幕大小
-                            VStack {
-                                Spacer(minLength: 40) // 顶部留出菜单栏空间（或安全距离）
-                                
-                                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: columnCount), spacing: 30) {
-                                    ForEach(page.apps) { app in
-                                        GridItemView(app: app)
-                                    }
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: columnCount), spacing: 30) {
+                                ForEach(page.apps) { app in
+                                    GridItemView(app: app)
                                 }
-                                .padding(.horizontal, 60) // 两侧留白，防止图标贴边
-                                
-                                Spacer()
                             }
+                            .padding(.horizontal, 60) // 两侧留白，防止图标贴边
                             .frame(width: pageWidth, height: pageHeight) // 💡 锁定单页宽高
                             .id(page.id)
                         }
@@ -82,8 +86,7 @@ struct GridView: View {
                     HStack(spacing: 12) {
                         ForEach(0..<filteredPages.count, id: \.self) { index in
                             Circle()
-                            // 如果是当前页，变亮变大，否则变暗变小
-                                .fill(Color.white.opacity(currentPageIndex == index ? 0.9 : 0.3))
+                            .fill(dotBaseColor.opacity(currentPageIndex == index ? 0.9 : 0.25))
                                 .frame(width: 8, height: 8)
                                 .scaleEffect(currentPageIndex == index ? 1.2 : 1.0)
                             // 添加点击圆点直接跳页的功能（如原生系统一致）
@@ -94,10 +97,11 @@ struct GridView: View {
                                 }
                         }
                     }
-                    .frame(alignment: .bottom)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
                     .padding(.bottom, 20) // 距离屏幕底部的安全边距
                     // 顺滑的小圆点过渡动画
                     .animation(.snappy(duration: 0.2), value: currentPageIndex)
+                    .zIndex(1)
                 }
             }
         }
