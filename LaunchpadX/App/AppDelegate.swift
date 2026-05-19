@@ -12,7 +12,7 @@ class AppDelegate:NSObject, NSApplicationDelegate{
         // .accessory 无 Dock，但可显示窗口
         // .prohibited 后台进程
         NSApp.setActivationPolicy(.accessory)
-        GlobalKeyMonitor.shared.start()
+        KeyboardGlobalMonitor.shared.start()
         
         
         // 启动时直接显示
@@ -20,6 +20,6 @@ class AppDelegate:NSObject, NSApplicationDelegate{
     }
     
     func applicationWillTerminate(_ notification: Notification) {
-        GlobalKeyMonitor.shared.stop()
+        KeyboardGlobalMonitor.shared.stop()
     }
 }

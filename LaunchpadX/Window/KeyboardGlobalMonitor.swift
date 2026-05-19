@@ -5,8 +5,8 @@
 //  Created by Jeffrey Chiang on 2026/5/13.
 //
 import AppKit
-final class GlobalKeyMonitor {
-    static let shared = GlobalKeyMonitor()
+final class KeyboardGlobalMonitor {
+    static let shared = KeyboardGlobalMonitor()
     // 改用保留底层 tap 的引用
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -23,12 +23,8 @@ final class GlobalKeyMonitor {
             if type == .keyDown {
                 let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
                 let flags = event.flags
-                
-                    
-                print("Captured KeyCode: \(keyCode) with with flags: \(flags)")
                 // 示例：A (KeyCode 0) 或 Option + Command + H
                 let ACtrlAltShift = (keyCode == 0) && flags.contains([.maskShift,.maskControl,.maskAlternate])
-                
                 if ACtrlAltShift  {
                     DispatchQueue.main.async {
                         WindowManager.shared.toggleLaunchpad()

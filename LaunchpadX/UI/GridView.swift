@@ -50,37 +50,44 @@ struct GridView: View {
     }
     
     
+    
     var body: some View {
         GeometryReader { geometry in
             // 获取当前可用屏幕的宽高
             let pageWidth = geometry.size.width
             let pageHeight = geometry.size.height
+            
             ZStack{
-                
                 SearchBarView(text: $searchText)
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding(.top, 20) // 避开状态栏
                     .zIndex(1)
-                ScrollView(.horizontal, showsIndicators: false){
-                    HStack(spacing: 0) {
-                        ForEach(filteredPages,id: \.self){ page in
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: columnCount), spacing: 30) {
-                                ForEach(page.apps) { app in
-                                    GridItemView(app: app)
+                
+                    ScrollView(.horizontal, showsIndicators: false){
+                        HStack(spacing: 0) {
+                            ForEach(filteredPages,id: \.self){ page in
+                                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: columnCount), spacing: 30) {
+                                    ForEach(page.apps) { app in
+                                        GridItemView(app: app)
+                                    }
                                 }
+                                .padding(.horizontal, 60) // 两侧留白，防止图标贴边
+                                .frame(width: pageWidth, height: pageHeight) // 💡 锁定单页宽高
+                                .id(page.id)
+                                .scaleEffect(viewModel.scale)
+                                .opacity(1 - (viewModel.scale - 0.92) / 0.08)
+                                .rotation3DEffect(.degrees((1 - viewModel.scale) * 8), axis: (x: 1,y: 0,z: 0), perspective: 0.8)
                             }
-                            .padding(.horizontal, 60) // 两侧留白，防止图标贴边
-                            .frame(width: pageWidth, height: pageHeight) // 💡 锁定单页宽高
-                            .id(page.id)
-                        }
+                        }.scrollTargetLayout()
                     }
-                }
-                .scrollPosition(id: $currentPageIndex)
-                .scrollTargetBehavior(.paging)
-                .scrollBounceBehavior(.always, axes: .horizontal)
-                .onTapGesture{
-                    hideLaunchpad()
-                }
+                    .scrollPosition(id: $currentPageIndex)
+                    .scrollTargetBehavior(.paging)
+                    .scrollBounceBehavior(.always, axes: .horizontal)
+                    .onTapGesture{
+                        hideLaunchpad()
+                    }                
+                    .accelerateMouseWheel(maxPages: filteredPages.count, currentPageIndex: $currentPageIndex)
+            
                 
                 if filteredPages.count > 1 {
                     HStack(spacing: 12) {
@@ -89,7 +96,13 @@ struct GridView: View {
                             .fill(dotBaseColor.opacity(currentPageIndex == index ? 0.9 : 0.25))
                                 .frame(width: 8, height: 8)
                                 .scaleEffect(currentPageIndex == index ? 1.2 : 1.0)
-                            // 添加点击圆点直接跳页的功能（如原生系统一致）
+                                .onHover{ hovering in
+                                    if hovering {
+                                        NSCursor.pointingHand.push()
+                                    } else {
+                                        NSCursor.pop()
+                                    }
+                                }
                                 .onTapGesture {
                                     withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                                         currentPageIndex = index
@@ -105,6 +118,12 @@ struct GridView: View {
                 }
             }
         }
+//        .onChange(of: currentPageIndex) { _, newValue in
+//            print("111111\(newValue)")
+//            if let validIndex = newValue {
+//                visualPageIndex = validIndex
+//            }
+//        }
         .onChange(of: searchText){ oldValue, newValue in
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                 if let current = currentPageIndex, current >= filteredPages.count {
