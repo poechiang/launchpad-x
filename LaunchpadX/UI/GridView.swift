@@ -44,12 +44,19 @@ struct GridView: View {
     @Environment(\.colorScheme) var colorScheme
     
     
+    
+    // 💡 1. 核心新增：专门用来接收键盘方向键事件的焦点状态
+    @FocusState private var isBackgroundFocused: Bool;
+    @FocusState private var isSearchBarFocused: Bool;
     // 小圆点的智能底色
     private var dotBaseColor: Color {
         colorScheme == .dark ? Color.white : Color.black
     }
     
     
+    
+    // 💡 1. 核心新增：专门用来强行擦除布局缓存的屏幕指纹状态
+    @State private var screenFingerprint: String = "init"
     
     var body: some View {
         GeometryReader { geometry in
@@ -58,7 +65,7 @@ struct GridView: View {
             let pageHeight = geometry.size.height
             
             ZStack{
-                SearchBarView(text: $searchText)
+                SearchBarView(text: $searchText,isFocused: $isSearchBarFocused)
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding(.top, 20) // 避开状态栏
                     .zIndex(1)
@@ -85,8 +92,10 @@ struct GridView: View {
                     .scrollBounceBehavior(.always, axes: .horizontal)
                     .onTapGesture{
                         hideLaunchpad()
-                    }                
-                    .accelerateMouseWheel(maxPages: filteredPages.count, currentPageIndex: $currentPageIndex)
+                    }
+                    .focusable()
+                    .focused($isBackgroundFocused)
+                    .focusEffectDisabled(true)
             
                 
                 if filteredPages.count > 1 {
@@ -117,13 +126,21 @@ struct GridView: View {
                     .zIndex(1)
                 }
             }
+            // 💡 2. 【核心重磅修正】：把 screenFingerprint 绑定为整个网格容器的唯一 ID！
+            // 只要指纹变了，SwiftUI 会物理清空上一屏的所有布局快照缓存，确保进场动画的第 0 毫秒尺寸绝对精准
+            .id(viewModel.screenFingerprint)
         }
-//        .onChange(of: currentPageIndex) { _, newValue in
-//            print("111111\(newValue)")
-//            if let validIndex = newValue {
-//                visualPageIndex = validIndex
-//            }
-//        }
+        // MARK: - 💡 【失去焦点自动隐藏】：监听系统窗口变为非活动状态的通知
+        // 比如用户点击了桌面上别的软件窗口，或者点击了通知中心，Launchpad 会立刻自动收起
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didResignActiveNotification)) { _ in
+            WindowManager.shared.hideLaunchpad()
+        }
+        // 当 Launchpad 被快捷键唤醒弹出时，强制把键盘焦点塞给大背景，确保方向键立刻可用
+        .onAppear {
+            isBackgroundFocused = true
+            searchText = ""
+            currentPageIndex = 0
+        }
         .onChange(of: searchText){ oldValue, newValue in
             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                 if let current = currentPageIndex, current >= filteredPages.count {
@@ -131,8 +148,15 @@ struct GridView: View {
                 }
             }
             
-        }
+        }.accelerateKeyboard(
+            maxPages: filteredPages.count,
+            currentPageIndex: $currentPageIndex,
+            searchText: $searchText,
+            isSearchBarFocused: $isSearchBarFocused,  // 👈 直接传入
+            isBackgroundFocused: $isBackgroundFocused // 👈 直接传入
+        )
     }
+    
     
     private func openApp(url:URL){
         NSWorkspace.shared.open(url)

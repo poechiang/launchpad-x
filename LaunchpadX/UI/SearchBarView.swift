@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SearchBarView: View {
     @Binding var text: String
-    @FocusState private var isFocused: Bool // 自动聚焦状态
+    var isFocused: FocusState<Bool>.Binding
     @Environment(\.colorScheme) var colorScheme
     
     private var iconColor:Color{
@@ -46,10 +46,10 @@ struct SearchBarView: View {
                     .textFieldStyle(.plain)
                     .foregroundColor(.primary)
                     .font(.system(size: 14, weight: .regular))
-                    .focused($isFocused)
+                    .focused(isFocused)
                     .onCommand( #selector(NSResponder.cancelOperation(_:)), perform:{
                         // 1. 先让输入框失去焦点（Blur）
-                        isFocused = false
+                        isFocused.wrappedValue = false
                         // 2. 触发全局隐藏（调用你的窗口隐藏方法）
                         DispatchQueue.main.async {
                             WindowManager.shared.hideLaunchpad()
@@ -93,14 +93,14 @@ struct SearchBarView: View {
             }
             .onTapGesture {
                 // 点击搜索栏内其他地方时，顺便帮输入框聚焦，提升体验
-                isFocused = true
+                isFocused.wrappedValue = true
             }
             
             Spacer()
         }
         .onAppear {
             // 💡 体验升级：快捷键唤起此界面时，搜索框自动获取焦点，用户直接打字即可进行筛选
-            isFocused = false
+            isFocused.wrappedValue = false
         }
     }
 }

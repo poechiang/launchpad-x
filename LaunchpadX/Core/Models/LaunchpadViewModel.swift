@@ -18,7 +18,7 @@ final class LaunchpadViewModel: ObservableObject {
     }
     
     @Published var scale: CGFloat = 1
-    
+    @Published var screenFingerprint: String = "init"
     @Published var phase: LaunchpadPhase = .hidden
     
     @Published var apps: [LaunchpadApp] = []
