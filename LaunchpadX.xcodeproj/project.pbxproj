@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		1F52DC5C2FB083FC008C3E73 /* LaunchpadX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LaunchpadX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F1045D82FBE39840024C706 /* LaunchpadX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LaunchpadX.app; path = /Users/jeff/Desktop/LaunchpadX/build/Debug/LaunchpadX.app; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,17 +38,8 @@
 			isa = PBXGroup;
 			children = (
 				1F52DC5E2FB083FC008C3E73 /* LaunchpadX */,
-				1F52DC5D2FB083FC008C3E73 /* Products */,
 				1FB3CE4C2FBE357E00C6A071 /* assets */,
 			);
-			sourceTree = "<group>";
-		};
-		1F52DC5D2FB083FC008C3E73 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				1F52DC5C2FB083FC008C3E73 /* LaunchpadX.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,7 +65,7 @@
 			packageProductDependencies = (
 			);
 			productName = LaunchpadX;
-			productReference = 1F52DC5C2FB083FC008C3E73 /* LaunchpadX.app */;
+			productReference = 1F1045D82FBE39840024C706 /* LaunchpadX.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -102,7 +93,7 @@
 			mainGroup = 1F52DC532FB083FC008C3E73;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1F52DC5D2FB083FC008C3E73 /* Products */;
+			productRefGroup = 1F52DC532FB083FC008C3E73;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -265,6 +256,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = assets;
 				DEVELOPMENT_TEAM = D8JC2RNBZF;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -310,6 +302,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = assets;
 				DEVELOPMENT_TEAM = D8JC2RNBZF;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
