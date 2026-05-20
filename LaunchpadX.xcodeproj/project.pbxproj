@@ -16,6 +16,11 @@
 			path = LaunchpadX;
 			sourceTree = "<group>";
 		};
+		1FB3CE4C2FBE357E00C6A071 /* assets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = assets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +39,7 @@
 			children = (
 				1F52DC5E2FB083FC008C3E73 /* LaunchpadX */,
 				1F52DC5D2FB083FC008C3E73 /* Products */,
+				1FB3CE4C2FBE357E00C6A071 /* assets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +68,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				1F52DC5E2FB083FC008C3E73 /* LaunchpadX */,
+				1FB3CE4C2FBE357E00C6A071 /* assets */,
 			);
 			name = LaunchpadX;
 			packageProductDependencies = (
